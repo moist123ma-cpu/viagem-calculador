@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#111827">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Viagem+">
+<meta name="description" content="Calculador de viagens com veículo, combustível, pedágios e custos adicionais.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Viagem+ — Calculador de Viagens</title>
+<style>
+:root{--bg:#f2f4f7;--card:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;--accent:#2563eb;--accent2:#1d4ed8;--danger:#dc2626;--ok:#059669;--shadow:0 8px 25px rgba(15,23,42,.07)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg)}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,Arial,sans-serif;color:var(--text);background:var(--bg);min-height:100vh;padding-bottom:calc(82px + env(safe-area-inset-bottom));}
+header{position:sticky;top:0;z-index:10;padding:calc(12px + env(safe-area-inset-top)) 16px 12px;background:rgba(242,244,247,.9);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid rgba(229,231,235,.7)}
+.head{max-width:720px;margin:auto;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px}.logo{width:38px;height:38px;border-radius:12px;background:#111827;display:grid;place-items:center;color:#fff;font-weight:800;font-size:18px}
+h1{font-size:20px;margin:0;font-weight:800}.subtitle{font-size:12px;color:var(--muted);margin-top:2px}
+main{max-width:720px;margin:0 auto;padding:14px 14px 20px}
+.view{display:none}.view.active{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.card h2{font-size:16px;margin:0 0 13px}.card h3{font-size:14px;margin:0 0 10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid.one{grid-template-columns:1fr}
+label{display:block;font-size:12px;color:var(--muted);font-weight:650;margin:0 0 6px}
+input,select{width:100%;height:46px;border:1px solid #d1d5db;border-radius:12px;background:#fff;padding:0 12px;font:inherit;font-size:16px;color:var(--text);outline:none}
+input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.field{margin-bottom:10px}.hint{font-size:11px;color:var(--muted);margin-top:5px}
+.switchrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0}.switchrow span{font-size:14px;font-weight:650}
+.switch{position:relative;width:50px;height:30px}.switch input{opacity:0;width:0;height:0}.slider{position:absolute;inset:0;border-radius:30px;background:#d1d5db;transition:.2s}.slider:before{content:"";position:absolute;width:24px;height:24px;left:3px;top:3px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.2);transition:.2s}.switch input:checked+.slider{background:var(--accent)}.switch input:checked+.slider:before{transform:translateX(20px)}
+.btn{border:0;border-radius:13px;min-height:46px;padding:0 16px;font-weight:750;font-size:15px;cursor:pointer;touch-action:manipulation}.btn.primary{background:var(--accent);color:#fff}.btn.primary:active{background:var(--accent2)}.btn.secondary{background:#eef2ff;color:#1d4ed8}.btn.ghost{background:#f3f4f6;color:#374151}.btn.danger{background:#fee2e2;color:#b91c1c}.btn.full{width:100%}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.actions.single{grid-template-columns:1fr}
+.results{display:grid;grid-template-columns:1fr 1fr;gap:9px}.metric{background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:12px}.metric .k{font-size:11px;color:var(--muted)}.metric .v{font-size:19px;font-weight:800;margin-top:3px}.metric.total{grid-column:1/-1;background:#111827;color:#fff;border-color:#111827}.metric.total .k{color:#d1d5db}.metric.total .v{font-size:28px}
+.bottom{position:fixed;z-index:20;left:0;right:0;bottom:0;padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:rgba(255,255,255,.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.nav{border:0;background:transparent;padding:7px 2px;border-radius:12px;color:#6b7280;font-size:10px;font-weight:700}.nav .ico{display:block;font-size:19px;line-height:21px;margin-bottom:2px}.nav.active{color:var(--accent);background:#eff6ff}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.pill{display:inline-flex;padding:5px 9px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:11px;font-weight:750}
+.history-item{padding:13px 0;border-bottom:1px solid var(--line)}.history-item:last-child{border-bottom:0}.history-item strong{font-size:14px}.history-meta{font-size:11px;color:var(--muted);margin-top:4px}.history-total{font-weight:800}
+.empty{text-align:center;color:var(--muted);padding:28px 10px;font-size:14px}
+.note{font-size:12px;line-height:1.5;color:#4b5563;background:#f9fafb;border-radius:12px;padding:11px}
+.toast{position:fixed;left:50%;bottom:95px;transform:translateX(-50%) translateY(20px);opacity:0;background:#111827;color:#fff;border-radius:12px;padding:11px 14px;font-size:13px;z-index:50;transition:.25s;max-width:90%;text-align:center}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(min-width:600px){main{padding-top:20px}.bottom{left:50%;right:auto;width:620px;transform:translateX(-50%);border:1px solid var(--line);border-bottom:0;border-radius:18px 18px 0 0}}
+</style>
+</head>
+<body>
+<header><div class="head"><div style="display:flex;align-items:center;gap:10px"><div class="logo">V+</div><div><h1>Viagem+</h1><div class="subtitle">Calculador de custos de viagem</div></div></div><button class="btn ghost" style="min-height:40px;padding:0 11px" onclick="shareApp()">↗</button></div></header>
+
+<main>
+<section id="calc" class="view active">
+<div class="card">
+<h2>Informações da viagem</h2>
+<div class="grid">
+<div class="field"><label>Nome</label><input id="name" placeholder="Ex.: Viagem SP"></div>
+<div class="field"><label>Pessoas</label><input id="people" type="number" min="1" value="1"></div>
+</div>
+<div class="grid">
+<div class="field"><label>Origem</label><input id="origin" placeholder="Rio de Janeiro"></div>
+<div class="field"><label>Destino</label><input id="dest" placeholder="São Paulo"></div>
+</div>
+<div class="field"><label>Distância total (km)</label><input id="distance" type="number" min="0" step="0.1" placeholder="Ex.: 900"></div>
+<div class="switchrow"><span>Distância já considera ida e volta?</span><label class="switch"><input id="round" type="checkbox" checked><span class="slider"></span></label></div>
+<div class="note">A distância pode ser informada manualmente. A integração automática com mapas/pedágios pode ser conectada posteriormente via API.</div>
+</div>
+
+<div class="card">
+<h2>Veículo</h2>
+<div class="grid">
+<div class="field"><label>Modalidade</label><select id="vehicle"><option value="rental">Veículo alugado</option><option value="own">Carro próprio</option></select></div>
+<div class="field"><label>Diárias</label><input id="days" type="number" min="0" step="1" value="1"></div>
+</div>
+<div class="grid">
+<div class="field"><label>Diária / custo (R$)</label><input id="daily" type="number" min="0" step="0.01" value="0"></div>
+<div class="field"><label>Seguro/taxas (R$)</label><input id="fees" type="number" min="0" step="0.01" value="0"></div>
+</div>
+</div>
+
+<div class="card">
+<h2>Combustível</h2>
+<div class="grid">
+<div class="field"><label>Consumo (km/L)</label><input id="consumption" type="number" min="0" step="0.1" value="10"></div>
+<div class="field"><label>Preço por litro (R$)</label><input id="fuelPrice" type="number" min="0" step="0.01" value="6"></div>
+</div>
+</div>
+
+<div class="card">
+<h2>Pedágios e demais gastos</h2>
+<div class="grid">
+<div class="field"><label>Pedágios ida (R$)</label><input id="tollOut" type="number" min="0" step="0.01" value="0"></div>
+<div class="field"><label>Pedágios volta (R$)</label><input id="tollBack" type="number" min="0" step="0.01" value="0"></div>
+<div class="field"><label>Estacionamento (R$)</label><input id="parking" type="number" min="0" step="0.01" value="0"></div>
+<div class="field"><label>Hospedagem (R$)</label><input id="lodging" type="number" min="0" step="0.01" value="0"></div>
+<div class="field"><label>Alimentação (R$)</label><input id="food" type="number" min="0" step="0.01" value="0"></div>
+<div class="field"><label>Outros (R$)</label><input id="other" type="number" min="0" step="0.01" value="0"></div>
+</div>
+</div>
+
+<div class="card">
+<div class="actions"><button class="btn primary" onclick="calculate()">Calcular</button><button class="btn secondary" onclick="saveTrip()">Salvar viagem</button></div>
+</div>
+
+<div id="resultCard" class="card" style="display:none">
+<h2>Resultado</h2>
+<div class="results">
+<div class="metric total"><div class="k">Custo total</div><div class="v" id="rTotal">R$ 0,00</div></div>
+<div class="metric"><div class="k">Combustível</div><div class="v" id="rFuel">R$ 0,00</div></div>
+<div class="metric"><div class="k">Veículo</div><div class="v" id="rVehicle">R$ 0,00</div></div>
+<div class="metric"><div class="k">Pedágios</div><div class="v" id="rTolls">R$ 0,00</div></div>
+<div class="metric"><div class="k">Outros</div><div class="v" id="rOther">R$ 0,00</div></div>
+<div class="metric"><div class="k">Custo / km</div><div class="v" id="rKm">R$ 0,00</div></div>
+<div class="metric"><div class="k">Custo / pessoa</div><div class="v" id="rPerson">R$ 0,00</div></div>
+<div class="metric"><div class="k">Litros</div><div class="v" id="rLiters">0 L</div></div>
+</div>
+</div>
+</section>
+
+<section id="compare" class="view">
+<div class="card"><h2>Comparar veículo próprio x alugado</h2><p class="note">Preencha os dados da viagem na aba Calculadora. Aqui você pode comparar dois cenários rapidamente.</p></div>
+<div class="card">
+<h2>Carro próprio</h2>
+<div class="grid">
+<div class="field"><label>Diária equivalente (R$)</label><input id="ownDaily" type="number" value="0" min="0" step=".01"></div>
+<div class="field"><label>Outros custos (R$)</label><input id="ownOther" type="number" value="0" min="0" step=".01"></div>
+</div>
+<button class="btn primary full" onclick="compare()">Comparar</button>
+</div>
+<div id="compareResult" class="card" style="display:none"><div class="results"><div class="metric"><div class="k">Alugado</div><div class="v" id="cRent">R$ 0,00</div></div><div class="metric"><div class="k">Próprio</div><div class="v" id="cOwn">R$ 0,00</div></div></div><div class="note" style="margin-top:10px" id="cNote"></div></div>
+</section>
+
+<section id="history" class="view">
+<div class="card"><div class="row"><h2 style="margin:0">Histórico</h2><button class="btn danger" style="min-height:38px" onclick="clearHistory()">Limpar</button></div><div id="historyList"></div></div>
+</section>
+
+<section id="settings" class="view">
+<div class="card"><h2>Configurações</h2><div class="field"><label>Chave Google Maps (opcional)</label><input id="apiKey" type="password" placeholder="AIza..."></div><button class="btn secondary full" onclick="saveSettings()">Salvar configuração</button><p class="hint">A versão V4 funciona sem chave. Para rota e pedágios automáticos, será necessária uma integração segura com API e restrições de chave.</p></div>
+<div class="card"><h2>Instalação no iPhone</h2><div class="note"><b>Safari:</b> abra o endereço onde o pacote estiver hospedado → toque em Compartilhar → <b>Adicionar à Tela de Início</b>. O pacote inclui manifest, ícones e service worker para funcionamento como PWA.</div></div>
+<div class="card"><h2>Sobre</h2><p class="hint">Viagem+ V4 — otimizado para iPhone/Safari. Dados das viagens ficam armazenados localmente no dispositivo.</p></div>
+</section>
+</main>
+
+<nav class="bottom">
+<button class="nav active" data-view="calc" onclick="showView('calc',this)"><span class="ico">🧮</span>Calcular</button>
+<button class="nav" data-view="compare" onclick="showView('compare',this)"><span class="ico">⚖️</span>Comparar</button>
+<button class="nav" data-view="history" onclick="showView('history',this)"><span class="ico">🗂️</span>Histórico</button>
+<button class="nav" data-view="settings" onclick="showView('settings',this)"><span class="ico">⚙️</span>Ajustes</button>
+</nav>
+<div id="toast" class="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const money=v=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(Number(v)||0);
+function n(id){return parseFloat($(id).value)||0}
+let lastResult=null;
+
+function calculate(){
+ const people=Math.max(1,n('people')), distance=n('distance'), days=n('days'), daily=n('daily'), fees=n('fees');
+ const consumption=n('consumption'), fuelPrice=n('fuelPrice');
+ const fuel=consumption>0?(distance/consumption)*fuelPrice:0;
+ const vehicle=(days*daily)+fees;
+ const tolls=n('tollOut')+n('tollBack');
+ const other=n('parking')+n('lodging')+n('food')+n('other');
+ const total=fuel+vehicle+tolls+other;
+ lastResult={people,distance,days,daily,fees,fuel,vehicle,tolls,other,total,liters:consumption>0?distance/consumption:0};
+ $('rTotal').textContent=money(total);$('rFuel').textContent=money(fuel);$('rVehicle').textContent=money(vehicle);
+ $('rTolls').textContent=money(tolls);$('rOther').textContent=money(other);$('rKm').textContent=money(distance?total/distance:0);
+ $('rPerson').textContent=money(total/people);$('rLiters').textContent=(lastResult.liters||0).toFixed(1)+' L';
+ $('resultCard').style.display='block';
+ return lastResult;
+}
+function saveTrip(){
+ const r=calculate(); const hist=JSON.parse(localStorage.getItem('viagem_history')||'[]');
+ const item={...r,name:$('name').value||'Viagem sem nome',origin:$('origin').value,dest:$('dest').value,date:new Date().toLocaleString('pt-BR')};
+ hist.unshift(item); localStorage.setItem('viagem_history',JSON.stringify(hist.slice(0,30))); renderHistory(); toast('Viagem salva no histórico.');
+}
+function renderHistory(){
+ const hist=JSON.parse(localStorage.getItem('viagem_history')||'[]'); const el=$('historyList');
+ if(!hist.length){el.innerHTML='<div class="empty">Nenhuma viagem salva ainda.</div>';return}
+ el.innerHTML=hist.map((x,i)=>`<div class="history-item"><div class="row"><strong>${esc(x.name)}</strong><span class="history-total">${money(x.total)}</span></div><div class="history-meta">${esc(x.origin||'')} ${x.origin&&x.dest?'→':''} ${esc(x.dest||'')} · ${x.date} · ${x.distance||0} km</div><div style="margin-top:8px"><button class="btn ghost" style="min-height:36px;font-size:12px" onclick="loadTrip(${i})">Abrir</button></div></div>`).join('');
+}
+function loadTrip(i){
+ const x=JSON.parse(localStorage.getItem('viagem_history')||'[]')[i]; if(!x)return;
+ ['name','origin','dest','distance','people','days','daily','fees'].forEach(k=>{if($(k)&&x[k]!==undefined)$(k).value=x[k]});
+ $('resultCard').style.display='block'; lastResult=x;
+ $('rTotal').textContent=money(x.total);$('rFuel').textContent=money(x.fuel);$('rVehicle').textContent=money(x.vehicle);$('rTolls').textContent=money(x.tolls);$('rOther').textContent=money(x.other);$('rKm').textContent=money(x.distance?x.total/x.distance:0);$('rPerson').textContent=money(x.total/(x.people||1));$('rLiters').textContent=(x.liters||0).toFixed(1)+' L';
+ showView('calc',document.querySelector('.nav[data-view="calc"]')); toast('Viagem carregada.');
+}
+function clearHistory(){if(confirm('Apagar todo o histórico?')){localStorage.removeItem('viagem_history');renderHistory();toast('Histórico apagado.');}}
+function compare(){
+ const r=lastResult||calculate();
+ const own=r.fuel+r.tolls+r.other+n('ownDaily')+n('ownOther');
+ $('cRent').textContent=money(r.total);$('cOwn').textContent=money(own);
+ $('cNote').textContent='Comparação baseada nos valores preenchidos. Os valores não representam recomendação; servem para apoiar sua análise de custos.';
+ $('compareResult').style.display='block';
+}
+function showView(id,btn){
+ document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$(id).classList.add('active');
+ document.querySelectorAll('.nav').forEach(v=>v.classList.remove('active')); if(btn)btn.classList.add('active');
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._toast);window._toast=setTimeout(()=>t.classList.remove('show'),2200)}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+async function shareApp(){
+ const text=lastResult?`Viagem: ${$('name').value||'Sem nome'}\nTotal: ${money(lastResult.total)}\nCusto/km: ${money(lastResult.distance?lastResult.total/lastResult.distance:0)}\nCusto/pessoa: ${money(lastResult.total/(lastResult.people||1))}`:'Calculador de viagens Viagem+';
+ if(navigator.share){try{await navigator.share({title:'Viagem+',text})}catch(e){}}
+ else{await navigator.clipboard?.writeText(text);toast('Resumo copiado.')}
+}
+function saveSettings(){localStorage.setItem('viagem_apiKey',$('apiKey').value||'');toast('Configuração salva neste dispositivo.')}
+$('apiKey').value=localStorage.getItem('viagem_apiKey')||'';
+renderHistory();
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+</script>
+</body>
+</html>
