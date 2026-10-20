@@ -1,0 +1,18 @@
+{
+  "name": "Meu Banco de Horas Pro",
+  "short_name": "BancoHoras",
+  "description": "Controle individual de jornada e banco de horas com cálculo CLT",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2972/2972531.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
